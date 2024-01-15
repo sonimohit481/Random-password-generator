@@ -1,10 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 function App() {
   const [length, setLength] = useState(8);
   const [isNum, setIsNum] = useState(false);
   const [isChar, setIsChar] = useState(false);
   const [password, setPassword] = useState("");
+
+  const passwordRef = useRef(null);
 
   const passwordGenerator = useCallback(() => {
     let pass = "";
@@ -13,12 +15,17 @@ function App() {
     if (isChar) str += "!@#$%^&*(){}?>";
 
     for (let i = 1; i <= length; i++) {
-      const charIndex = Math.floor(Math.random() * str.length + 1);
-
+      const charIndex = Math.floor(Math.random() * str.length);
       pass += str.charAt(charIndex);
     }
     setPassword(pass);
   }, [length, isNum, isChar, setPassword]);
+
+  const copyPassword = () => {
+    passwordRef.current?.focus();
+    window.navigator.clipboard.writeText(password);
+  };
+
   useEffect(() => {
     passwordGenerator();
   }, [length, isNum, isChar, passwordGenerator]);
@@ -33,8 +40,9 @@ function App() {
           className="outline-none w-full py-1 px-3"
           placeholder="Password"
           readOnly
+          ref={passwordRef}
         />
-        <button>COPY</button>
+        <button onClick={copyPassword}>COPY</button>
       </div>
       <div>
         <div>
@@ -43,7 +51,7 @@ function App() {
             min={6}
             max={18}
             value={length}
-            onChange={(e) => setLength(e.target.value)}
+            onChange={(e) => setLength(Number(e.target.value))}
           />
           <label>length: {length}</label>
         </div>
@@ -60,7 +68,7 @@ function App() {
           <input
             type="checkbox"
             defaultChecked={isChar}
-            id="numberInput"
+            id="charInput"
             onChange={() => setIsChar((pre) => !pre)}
           />
           <label>Char</label>
