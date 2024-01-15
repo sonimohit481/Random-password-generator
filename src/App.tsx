@@ -6,7 +6,7 @@ function App() {
   const [isChar, setIsChar] = useState(false);
   const [password, setPassword] = useState("");
 
-  const passwordRef = useRef(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
 
   const passwordGenerator = useCallback(() => {
     let pass = "";
