@@ -22,7 +22,7 @@ function App() {
   }, [length, isNum, isChar, setPassword]);
 
   const copyPassword = () => {
-    passwordRef.current?.focus();
+    passwordRef.current?.select();
     window.navigator.clipboard.writeText(password);
   };
 
