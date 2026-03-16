@@ -5,6 +5,7 @@ function App() {
   const [isNum, setIsNum] = useState(false);
   const [isChar, setIsChar] = useState(false);
   const [password, setPassword] = useState("");
+  const [copied, setCopied] = useState(false);
 
   const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -24,6 +25,8 @@ function App() {
   const copyPassword = () => {
     passwordRef.current?.select();
     window.navigator.clipboard.writeText(password);
+    setCopied(true);
+    window.setTimeout(() => setCopied(false), 900);
   };
 
   useEffect(() => {
@@ -31,60 +34,101 @@ function App() {
   }, [length, isNum, isChar, passwordGenerator]);
 
   return (
-    <div className="w-full h-screen  bg-black dark:bg-slate-100 flex justify-center items-center">
-      <div
-        className={
-          "w-full max-w-md mx-auto rounded-lg shadow-xl p-4 m-8 text-balck bg-white dark:text-white dark:bg-black"
-        }
-      >
-        <h1 className="text-3xl font-bold text-center mb-4">
-          Password Generator
-        </h1>
-        <div className="flex shadow-lg overflow-hidden mb-4">
+    <div className="rg-page">
+      <div className="rg-card" role="application" aria-label="Password generator">
+        <div className="rg-crown" aria-hidden="true">
+          <svg viewBox="0 0 128 64" width="72" height="36">
+            <path
+              d="M12 48 L28 18 L48 40 L64 12 L80 40 L100 18 L116 48 Z"
+              fill="#f6d04f"
+              stroke="#b48b1d"
+              strokeWidth="6"
+              strokeLinejoin="round"
+            />
+            <rect
+              x="14"
+              y="44"
+              width="100"
+              height="14"
+              rx="4"
+              fill="#f6d04f"
+              stroke="#b48b1d"
+              strokeWidth="6"
+            />
+            <circle cx="28" cy="18" r="6" fill="#7bdcff" />
+            <circle cx="64" cy="12" r="6" fill="#7bdcff" />
+            <circle cx="100" cy="18" r="6" fill="#7bdcff" />
+          </svg>
+        </div>
+
+        <h1 className="rg-title">Generate a Password</h1>
+
+        <div className="rg-row rg-passwordRow">
           <input
             type="text"
             value={password}
-            className="outline-none w-full py-2 px-3 bg-slate-200 dark:bg-white dark:text-black"
-            placeholder="Password"
+            className="rg-input"
+            aria-label="Generated password"
             readOnly
             ref={passwordRef}
           />
-          <button
-            className={"bg-blue-500 text-white px-4 py-2 hover:bg-orange-700"}
-            onClick={copyPassword}
-          >
-            COPY
+          <button className="rg-copyBtn" onClick={copyPassword} type="button">
+            {copied ? "COPIED" : "COPY"}
           </button>
         </div>
-        <div className="flex flex-row items-center justify-between">
-          <div className="flex items-center">
+
+        <div className="rg-row rg-controls">
+          <div className="rg-sliderGroup">
             <input
+              className="rg-slider"
               type="range"
               min={6}
               max={18}
               value={length}
               onChange={(e) => setLength(Number(e.target.value))}
-              className="w-full mr-2"
+              aria-label="Password length"
             />
-            <label>Length:{length}</label>
+            <div className="rg-label">
+              <span className="rg-labelKey">Length</span>
+              <span className="rg-labelVal">{length}</span>
+            </div>
           </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              defaultChecked={isNum}
-              id="numberInput"
-              onChange={() => setIsNum((prev) => !prev)}
-            />
-            <label className="ml-2">Number</label>
-          </div>
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              defaultChecked={isChar}
-              id="charInput"
-              onChange={() => setIsChar((prev) => !prev)}
-            />
-            <label className="ml-2">Char</label>
+
+          <div className="rg-toggleGroup" aria-label="Options">
+            <div className="rg-togglePill">
+              <span className="rg-miniCrown" aria-hidden="true">
+                <svg viewBox="0 0 64 32" width="16" height="16">
+                  <path
+                    d="M6 26 L14 10 L24 22 L32 8 L40 22 L50 10 L58 26 Z"
+                    fill="#f6d04f"
+                    stroke="#b48b1d"
+                    strokeWidth="4"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <span className="rg-pillText">Numbers</span>
+              <label className="rg-switch">
+                <input
+                  type="checkbox"
+                  checked={isNum}
+                  onChange={() => setIsNum((prev) => !prev)}
+                />
+                <span className="rg-switchTrack" aria-hidden="true" />
+              </label>
+            </div>
+
+            <div className="rg-togglePill">
+              <span className="rg-pillText">Symbols</span>
+              <label className="rg-switch">
+                <input
+                  type="checkbox"
+                  checked={isChar}
+                  onChange={() => setIsChar((prev) => !prev)}
+                />
+                <span className="rg-switchTrack" aria-hidden="true" />
+              </label>
+            </div>
           </div>
         </div>
       </div>
